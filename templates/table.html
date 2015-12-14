@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block heading %}
+<center>
+<form method='GET' action='{{ home_url }}'>
+<input value='Return' name ='btn' type='SUBMIT'><br>
+</form>
+</center>
+{% endblock %}
+		
+{% block body %}
+<center>
+<table border = '1'>  
+<tr>
+{% for title in the_titles %}
+	<td><strong>{{ title }}</strong></td>
+{% endfor %}
+</tr>
+{% for line in the_data %}
+	<tr>
+	{% for value in line %}
+        <td>{{ value }}</td>
+	{% endfor%}
+    </tr>
+{% endfor %}
+</table>
+</center>
+{% endblock %}
+

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<center><p>Which table would you like to edit?</p></center>
+<form method='POST' action='{{ the_table_url }}'>
+<center>
+<input value='Games' name ='btn' type='SUBMIT'>
+<input value='Players' name ='btn' type='SUBMIT'>
+<input value='Scores' name ='btn' type='SUBMIT'>
+</center>
+</form>
+<br>
+<center><p>Click here to view the high-scores table of a game.</p></center>
+<form method='GET' action='{{ the_highscores_url }}'>
+<center>
+<input value='High-Scores' name ='btn' type='SUBMIT'>
+</center>
+</form>
+<br>
+<center><p>Click here to view the activity of a player.</p></center>
+<form method='GET' action='{{ the_playeractivity_url}}'>
+<center>
+<input value='Activity Viewer' name ='btn' type='SUBMIT'>
+</center>
+</form>
+
+{% endblock %}

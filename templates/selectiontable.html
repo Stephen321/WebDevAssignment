@@ -1,0 +1,22 @@
+{% extends 'table.html' %}
+
+{% block body %}
+{% if the_name != 'default'%}
+<br>
+<center>{{ the_text }}{{ the_name }}.</center>
+{{ super() }}
+{% endif %}
+{% endblock %}
+
+{% block body2 %}
+<br>
+{{ the_selecting_text}}
+<form method='POST' action={{ the_showactivity_url }}>
+<table>
+{% for item in the_list %}
+<tr><td><input value='{{ item }}' name ='btn' type='SUBMIT'></td></tr>
+{% endfor %}
+</table>
+</form>
+
+{% endblock %}

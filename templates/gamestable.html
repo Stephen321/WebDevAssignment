@@ -1,0 +1,15 @@
+{% extends 'table.html' %}
+
+{% block body2 %}
+
+<center>
+<div class='insert'>
+<form method='POST' action = '{{ the_add_url }}'>
+<input size='10' name ='name' type='TEXT'>
+<input size='115' name ='description' type='TEXT'>
+<input value='Add' name ='btn' type='SUBMIT'>
+</form>
+<div>
+</center>
+
+{% endblock %}
