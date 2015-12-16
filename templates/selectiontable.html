@@ -1,5 +1,22 @@
 {% extends 'table.html' %}
 
+{% block heading %}
+<br>
+{{ the_selecting_text}}
+<form method='POST' action={{ the_showactivity_url }}>
+<select name = 'nameSelect'>
+  {% for item in the_list %}
+  <option value='{{ item }}'>{{ item }}</option>
+  {% endfor %}
+</select>
+    <input value='View!' name ='btn' type='SUBMIT'>
+</form>
+<form method='GET' action='{{ home_url }}'>
+<input value='Return' name ='btn' type='SUBMIT'>
+</form>
+
+{% endblock %}
+
 {% block body %}
 {% if the_name != 'default'%}
 <br>
@@ -8,15 +25,7 @@
 {% endif %}
 {% endblock %}
 
+
 {% block body2 %}
-<br>
-{{ the_selecting_text}}
-<form method='POST' action={{ the_showactivity_url }}>
-<table>
-{% for item in the_list %}
-<tr><td><input value='{{ item }}' name ='btn' type='SUBMIT'></td></tr>
-{% endfor %}
-</table>
-</form>
 
 {% endblock %}

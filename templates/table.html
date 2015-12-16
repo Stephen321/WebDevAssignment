@@ -20,10 +20,34 @@
 	<tr>
 	{% for value in line %}
         <td>{{ value }}</td>
-	{% endfor%}
+	{% endfor %}
     </tr>
 {% endfor %}
 </table>
 </center>
 {% endblock %}
 
+{% block body2 %}
+
+<center>
+<br>
+<form method='POST' action = '{{ the_add_url }}'>
+
+<table>
+<tr>
+<tr>
+{% for value in the_titles %}
+<td>{{ value }}</td>
+{% endfor %}
+</tr>
+{% for value in the_titles %}
+<td><input name ='{{ value }}' type='TEXT'></td>
+{% endfor %}
+<td><input value='Add' name ='btn' type='SUBMIT'></td>
+</tr>
+</table>
+
+</form>
+</center>
+
+{% endblock %}

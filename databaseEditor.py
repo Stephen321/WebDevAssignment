@@ -42,7 +42,7 @@ def showtable(table) -> 'html':
             titles = ('Game Name', 'Player', 'Score',)
         cursor.execute(_SQL)
         data = cursor.fetchall()
-    return render_template(table.lower() + 'table.html',
+    return render_template('table.html',
                            the_title=table + ' Table',
                            the_data=data,
                            home_url='/welcome',
@@ -53,20 +53,22 @@ def showtable(table) -> 'html':
 @app.route('/table/<path:table>/add', methods=['POST'])
 def insertinto(table) -> 'url':
     with DBcm.UseDatabase(config) as cursor:
-        canExecute = False
         if table == 'Games':
             _SQL = '''INSERT INTO games (name, description)
                       VALUES (%s, %s)'''
             if request.form['name'] != '' and request.form['description'] != '':
-                canExecute = True
-        if canExecute:
-            cursor.execute(_SQL, (request.form['name'],request.form['description']))
+                cursor.execute(_SQL, (request.form['name'],request.form['description']))
+        elif table == 'Players':
+            _SQL = '''INSERT INTO players (handle, first, last, email, passwd)
+                      VALUES (%s, %s, %s, %s, %s)'''
+            if request.form['handle'] != '' and request.form['first'] != '' and request.form['last'] != '' and request.form['email'] != '' and request.form['passwd'] != '':
+                cursor.execute(_SQL, (request.form['handle'], request.form['first'], request.form['last'], request.form['email'], request.form['passwd'] != ''))
     return redirect(url_for('showtable', table=table))
         
 """Question 3----------------------------------------------------------------------------------"""                 
 @app.route('/getgame', methods=['POST'])
 def gethighscores() -> 'url':
-    game = request.form['btn']
+    game = request.form['nameSelect']
     return redirect(url_for('showgamehighscores', game=game))
     
 @app.route('/highscores/<path:game>', methods=['GET'])
@@ -103,7 +105,7 @@ def showgamehighscores(game) -> 'html':
 """Question 4----------------------------------------------------------------------------------"""                  
 @app.route('/gethandle', methods=['POST'])
 def getactivity() -> 'url':
-    handle = request.form['btn']
+    handle = request.form['nameSelect']
     return redirect(url_for('showplayeractivity', handle=handle))
     
 @app.route('/activity/<path:handle>', methods=['GET'])
