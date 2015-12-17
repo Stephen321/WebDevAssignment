@@ -7,7 +7,9 @@
 </form>
 </center>
 {% endblock %}
-		
+        
+
+<!--Displaying-->
 {% block body %}
 <center>
 <table border = '1'>  
@@ -28,26 +30,54 @@
 {% endblock %}
 
 {% block body2 %}
-
 <center>
 <br>
-<form method='POST' action = '{{ the_add_url }}'>
+
+<!--Adding + Updating + Deleting-->
+<form method='POST' action = '{{ the_action_url }}'>
+{% if the_list != [] %} <!--not the scores table-->
 
 <table>
-<tr>
-<tr>
+<tr><tr>
 {% for value in the_titles %}
 <td>{{ value }}</td>
-{% endfor %}
-</tr>
+{% endfor %}</tr>
 {% for value in the_titles %}
-<td><input name ='{{ value }}' type='TEXT'></td>
+<td><input name ='{{ value.lower() }}' type='TEXT'></td>
 {% endfor %}
-<td><input value='Add' name ='btn' type='SUBMIT'></td>
 </tr>
 </table>
+Select an entry to update/delete: 
+<select name = 'select'>
+  {% for item in the_list %}
+  <option value='{{ item[0] }}'>{{ item[1] }}</option>
+  {% endfor %}
+</select>
+<input value='Update' name ='btn' type='SUBMIT'>
+<input value='Delete' name ='btn' type='SUBMIT'>
 
+{% else %}<!--scores table-->
+
+<select name = 'gameSelect'>
+  {% for item in the_score_games %}
+  <option value='{{ item[0] }}'>{{ item[1] }}</option>
+  {% endfor %}
+</select>
+<select name = 'playerSelect'>
+  {% for item in the_score_players %}
+  <option value='{{ item[0] }}'>{{ item[1] }}</option>
+  {% endfor %}
+</select>
+<table>
+<tr><tr>
+<td>{{ the_titles[-1] }}</td>
+<td><input name ='{{ the_titles[-1].lower() }}' type='TEXT'></td>
+</tr>
+</table>
+{% endif %}
+<input value='Add' name ='btn' type='SUBMIT'>
 </form>
-</center>
 
+
+</center>
 {% endblock %}
