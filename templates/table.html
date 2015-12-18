@@ -7,12 +7,12 @@
 </form>
 </center>
 {% endblock %}
-        
+
 
 <!--Displaying-->
 {% block body %}
 <center>
-<table border = '1'>  
+<table border = '1'>
 <tr>
 {% for title in the_titles %}
 	<td><strong>{{ title }}</strong></td>
@@ -35,7 +35,7 @@
 
 <!--Adding + Updating + Deleting-->
 <form method='POST' action = '{{ the_action_url }}'>
-{% if the_list != [] %} <!--not the scores table-->
+{% if is_scores == False %} <!--not the scores table-->
 
 <table>
 <tr><tr>
@@ -47,7 +47,7 @@
 {% endfor %}
 </tr>
 </table>
-Select an entry to update/delete: 
+Select an entry to update/delete:
 <select name = 'select'>
   {% for item in the_list %}
   <option value='{{ item[0] }}'>{{ item[1] }}</option>

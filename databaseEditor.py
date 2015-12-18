@@ -5,10 +5,10 @@ from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 
 config = { 'host': '127.0.0.1',
-           'database': 'gamesDB',
+           'database': 'gamesdb',
            'user': 'gamesadmin',
            'password': 'gamesadminpasswd' }
-		   
+
 @app.route('/', methods=['GET'])
 @app.route('/welcome', methods=['GET'])
 def entry() -> 'html':
@@ -19,20 +19,21 @@ def entry() -> 'html':
                            the_highscores_url=url_for('showgamehighscores', game='default'),
                            the_playeractivity_url=url_for('showplayeractivity', handle='default'),)
 
-"""Question 2----------------------------------------------------------------------------------"""                 
+"""Question 2----------------------------------------------------------------------------------"""
 @app.route('/gettable', methods=['POST'])
 def gettable() -> 'url':
     table = request.form['btn']
     return redirect(url_for('showtable', table=table))
-    
+
 #display table
 @app.route('/table/<path:table>', methods=['GET'])
 def showtable(table) -> 'html':
     _ListSQL = ''
     _ScoreGameInfoSQL = ''
     _ScorePlayerInfoSQL = ''
+    isScores = False
     if table == 'Games':
-        _SQL = '''SELECT name,description 
+        _SQL = '''SELECT name,description
                   FROM games'''
         _ListSQL = '''SELECT id,name
                       FROM games'''
@@ -52,8 +53,9 @@ def showtable(table) -> 'html':
         _ScoreGameInfoSQL = '''SELECT id,name
                       FROM games'''
         titles = ('Game', 'Player', 'Score',)
+        isScores = True
     with DBcm.UseDatabase(config) as cursor:
-        if _ListSQL != '': #not scores
+        if isScores == False: #not scores
             cursor.execute(_ListSQL)
             list = cursor.fetchall()
             scoreGames = []
@@ -72,11 +74,12 @@ def showtable(table) -> 'html':
                            home_url='/welcome',
                            the_titles=titles,
                            the_list=list,
+                           is_scores=isScores,
                            the_score_games = scoreGames,
                            the_score_players = scorePlayers,
                            the_action_url=url_for('tableaction', table=table))
 
-#check what button was pressed and respond appropriately                           
+#check what button was pressed and respond appropriately
 @app.route('/table/<path:table>/actions', methods=['Post'])
 def tableaction(table) -> 'url':
     action = request.form['btn']
@@ -87,15 +90,15 @@ def tableaction(table) -> 'url':
     elif action == 'Delete':
         url = url_for('deletefrom', table=table)
     return redirect(url, code=307)  #code to post
-             
+
 #checks if string is an int
 def IsInt(s):
-    try: 
+    try:
         int(s)
         return True
     except ValueError:
         return False
-        
+
 #inserting into table
 @app.route('/table/<path:table>/add', methods=['POST'])
 def insertinto(table) -> 'url':
@@ -120,7 +123,7 @@ def insertinto(table) -> 'url':
             cursor.execute(_SQL, parameters)
         #TODO: insert into score
     return redirect(url_for('showtable', table=table))
- 
+
 #updating table
 @app.route('/table/<path:table>/update', methods=['POST'])
 def update(table) -> 'url':
@@ -142,7 +145,7 @@ def update(table) -> 'url':
         if parameters != ():
             cursor.execute(_SQL, parameters + (request.form['select'],))
     return redirect(url_for('showtable', table=table))
-    
+
 #deleting from table
 @app.route('/table/<path:table>/delete', methods=['POST'])
 def deletefrom(table) -> 'url':
@@ -154,15 +157,15 @@ def deletefrom(table) -> 'url':
                   WHERE id = %s'''
         #don't delete from scores
     with DBcm.UseDatabase(config) as cursor:
-        cursor.execute(_SQL, (request.form['select'],))                 
+        cursor.execute(_SQL, (request.form['select'],))
     return redirect(url_for('showtable', table=table))
-        
-"""Question 3----------------------------------------------------------------------------------"""                 
+
+"""Question 3----------------------------------------------------------------------------------"""
 @app.route('/getgame', methods=['POST'])
 def gethighscores() -> 'url':
     game = request.form['nameSelect']
     return redirect(url_for('showgamehighscores', game=game))
-    
+
 @app.route('/highscores/<path:game>', methods=['GET'])
 def showgamehighscores(game) -> 'html':
     _GamesSQL = '''SELECT name
@@ -192,13 +195,13 @@ def showgamehighscores(game) -> 'html':
                            the_name=game,
                            the_text='The highscores of ',
                            the_selecting_text='Select a game to its high-score table.')
-                           
-"""Question 4----------------------------------------------------------------------------------"""                  
+
+"""Question 4----------------------------------------------------------------------------------"""
 @app.route('/gethandle', methods=['POST'])
 def getactivity() -> 'url':
     handle = request.form['nameSelect']
     return redirect(url_for('showplayeractivity', handle=handle))
-    
+
 @app.route('/activity/<path:handle>', methods=['GET'])
 def showplayeractivity(handle) -> 'html':
     _PlayersSQL = '''SELECT handle
@@ -208,12 +211,12 @@ def showplayeractivity(handle) -> 'html':
                       WHERE scores.player_id=(SELECT id
                                               FROM players
                                               WHERE players.handle=%s)
-                      AND games.id=scores.game_id''' 
+                      AND games.id=scores.game_id'''
     titles = ('Game', 'Score', 'Time',)
     with DBcm.UseDatabase(config) as cursor:
         cursor.execute(_PlayersSQL)
         players = cursor.fetchall()
-        players = [''.join(x) for x in players]       
+        players = [''.join(x) for x in players]
         cursor.execute(_ActivitySQL, (handle,))
         data = cursor.fetchall()
     return render_template('selectiontable.html',
@@ -226,7 +229,7 @@ def showplayeractivity(handle) -> 'html':
                            the_name=handle,
                            the_text='The activity of ',
                            the_selecting_text='Select a player to see their activity.')
-						   
+
 if __name__ == '__main__':
     app.run(debug=True)
 
